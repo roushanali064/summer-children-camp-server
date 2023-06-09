@@ -40,7 +40,9 @@ async function run() {
         // instructor api
         app.get('/instructor', async (req, res) => {
             const filter = {role: 'instructor'};
-            const result = await userCollection.find(filter).toArray();
+            const result = await userCollection.find(filter).sort({
+                students: -1
+            }).toArray();
             res.send(result)
         })
 
