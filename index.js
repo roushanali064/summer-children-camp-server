@@ -38,7 +38,11 @@ async function run() {
 
         // user api
         // instructor api
-        
+        app.get('/instructor', async (req, res) => {
+            const filter = {role: 'instructor'};
+            const result = await userCollection.find(filter).toArray();
+            res.send(result)
+        })
 
         // classes api
 
