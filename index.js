@@ -34,11 +34,18 @@ async function run() {
         // await client.connect();
 
         const classesCollection = client.db('summerCampChildrenDb').collection('Classes');
+        const userCollection = client.db('summerCampChildrenDb').collection('user');
+
+        // user api
+        // instructor api
+        
 
         // classes api
 
         app.get('/classes', async (req, res) => {
-            const result = await classesCollection.find().sort({ enrolled: -1 }).toArray();
+            const result = await classesCollection.find().sort({
+                enrolled: -1
+            }).toArray();
             res.send(result)
         })
 
