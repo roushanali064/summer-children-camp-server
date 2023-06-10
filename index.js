@@ -49,7 +49,8 @@ async function run() {
         // classes api
 
         app.get('/classes', async (req, res) => {
-            const result = await classesCollection.find().sort({
+            const filter = {status: 'approved'}
+            const result = await classesCollection.find(filter).sort({
                 enrolled: -1
             }).toArray();
             res.send(result)
