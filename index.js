@@ -37,9 +37,26 @@ async function run() {
         const userCollection = client.db('summerCampChildrenDb').collection('user');
 
         // user api
+        
+        app.post('/user', async (req, res) => {
+            const user = req.body.savedUser;
+            const filter = {
+                email: user.email
+            };
+            console.log(user)
+             const checkUser = await userCollection.findOne(filter);
+             if (checkUser) {
+                 return res.send('user already saved')
+             }
+             const result = await userCollection.insertOne(user);
+             res.send(result)
+        })
+
         // instructor api
         app.get('/instructor', async (req, res) => {
-            const filter = {role: 'instructor'};
+            const filter = {
+                role: 'instructor'
+            };
             const result = await userCollection.find(filter).sort({
                 students: -1
             }).toArray();
@@ -49,7 +66,9 @@ async function run() {
         // classes api
 
         app.get('/classes', async (req, res) => {
-            const filter = {status: 'approved'}
+            const filter = {
+                status: 'approved'
+            }
             const result = await classesCollection.find(filter).sort({
                 enrolled: -1
             }).toArray();
