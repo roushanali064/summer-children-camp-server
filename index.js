@@ -40,7 +40,7 @@ async function run() {
 
         app.get('/user/:email', async (req, res) => {
             const email = req.params.email;
-            console.log(email)
+            
             const filter = {
                 email: email
             };
@@ -93,9 +93,17 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/manageclasses', async (req,res)=>{
+            const filter = {
+                email: { $exists: true }
+            }
+            const result = await classesCollection.find(filter).toArray();
+            res.send(result)
+        })
+
         app.post('/class', async (req,res)=>{
             const newClass = req.body?.newClass;
-            console.log(newClass)
+            
              const result = await classesCollection.insertOne(newClass);
              res.send(result)
         })
