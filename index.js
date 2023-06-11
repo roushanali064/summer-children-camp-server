@@ -101,8 +101,22 @@ async function run() {
             const result = await classesCollection.find(filter).toArray();
             res.send(result)
         })
-
+        // status approved api
         app.put('/status/:id', async (req,res)=>{
+            const id = req.params.id;
+            const filter = {_id: new ObjectId(id)};
+            const doc = req.body.status;
+            
+             const updateDoc = {
+                 $set: {
+                   status: doc
+                 },
+               };
+            const result = await classesCollection.updateOne(filter, updateDoc)
+            res.send(result)
+        })
+        // status deny api
+        app.put('/status/deny/:id', async (req,res)=>{
             const id = req.params.id;
             const filter = {_id: new ObjectId(id)};
             const doc = req.body.status;
