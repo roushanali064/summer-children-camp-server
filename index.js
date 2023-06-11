@@ -37,13 +37,22 @@ async function run() {
         const userCollection = client.db('summerCampChildrenDb').collection('user');
 
         // user api
+
+        app.get('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email)
+            const filter = {
+                email: email
+            };
+            const user = await userCollection.findOne(filter)
+            res.send(user)
+        })
         
         app.post('/user', async (req, res) => {
             const user = req.body.savedUser;
             const filter = {
                 email: user.email
             };
-            console.log(user)
              const checkUser = await userCollection.findOne(filter);
              if (checkUser) {
                  return res.send('user already saved')
@@ -73,6 +82,13 @@ async function run() {
                 enrolled: -1
             }).toArray();
             res.send(result)
+        })
+
+        app.post('/class', async (req,res)=>{
+            const newClass = req.body?.newClass;
+            console.log(newClass)
+             const result = await classesCollection.insertOne(newClass);
+             res.send(result)
         })
 
         // Send a ping to confirm a successful connection
