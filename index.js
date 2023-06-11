@@ -5,7 +5,8 @@ require('dotenv').config()
 const port = process.env.PORT || 5000;
 const {
     MongoClient,
-    ServerApiVersion
+    ServerApiVersion,
+    ObjectId
 } = require('mongodb');
 
 // middle ware
@@ -98,6 +99,20 @@ async function run() {
                 email: { $exists: true }
             }
             const result = await classesCollection.find(filter).toArray();
+            res.send(result)
+        })
+
+        app.put('/status/:id', async (req,res)=>{
+            const id = req.params.id;
+            const filter = {_id: new ObjectId(id)};
+            const doc = req.body.status;
+            
+             const updateDoc = {
+                 $set: {
+                   status: doc
+                 },
+               };
+            const result = await classesCollection.updateOne(filter, updateDoc)
             res.send(result)
         })
 
