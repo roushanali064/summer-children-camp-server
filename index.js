@@ -38,6 +38,10 @@ async function run() {
         const userCollection = client.db('summerCampChildrenDb').collection('user');
 
         // user api
+        app.get('/users', async (req,res)=>{
+            const result = await userCollection.find().toArray()
+            res.send(result)
+        })
 
         app.get('/user/:email', async (req, res) => {
             const email = req.params.email;
@@ -47,6 +51,20 @@ async function run() {
             };
             const user = await userCollection.findOne(filter)
             res.send(user)
+        })
+        
+        app.put('/user/:id', async (req,res)=>{
+            const id = req.params.id;
+            const filter = {_id: new ObjectId(id)}
+            const doc = req.body.role;
+            const updateDoc = {
+                $set: {
+                  role: doc
+                },
+              };
+            const result = await userCollection.updateOne(filter,updateDoc)
+            res.send(result)
+
         })
         
         app.post('/user', async (req, res) => {
