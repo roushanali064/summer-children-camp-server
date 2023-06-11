@@ -84,6 +84,15 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/myclasses/:email', async (req,res)=>{
+            const email = req.params.email;
+            const filter ={
+                email: email
+            }
+            const result = await classesCollection.find(filter).toArray()
+            res.send(result)
+        })
+
         app.post('/class', async (req,res)=>{
             const newClass = req.body?.newClass;
             console.log(newClass)
