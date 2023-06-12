@@ -35,6 +35,7 @@ async function run() {
         // await client.connect();
 
         const classesCollection = client.db('summerCampChildrenDb').collection('Classes');
+        const bookedClassesCollection = client.db('summerCampChildrenDb').collection('bookedClasses');
         const userCollection = client.db('summerCampChildrenDb').collection('user');
 
         // user api
@@ -169,6 +170,13 @@ async function run() {
             
              const result = await classesCollection.insertOne(newClass);
              res.send(result)
+        })
+        // bookClass Api
+
+        app.post('/booked/class', async (req,res)=>{
+            const data = req.body;
+            const result = await bookedClassesCollection.insertOne(data);
+            res.send(result)
         })
 
         // Send a ping to confirm a successful connection
