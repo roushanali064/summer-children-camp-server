@@ -122,6 +122,22 @@ async function run() {
             const result = await classesCollection.find(filter).toArray();
             res.send(result)
         })
+
+        app.patch('/update/seats/:id', async (req,res)=>{
+            const id = req.params?.id;
+            const filter = {
+                _id: new ObjectId(id)
+            }
+            const doc = req.body;
+            const updateDoc = {
+                $set: {
+                  availableSeats: doc?.availableSeats
+                },
+              };
+            const result = await classesCollection.updateOne(filter,updateDoc)
+            res.send(result)
+        })
+
         // status approved api
         app.put('/status/:id', async (req,res)=>{
             const id = req.params.id;
