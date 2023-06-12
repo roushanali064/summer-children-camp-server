@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 require('dotenv').config()
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 const port = process.env.PORT || 5000;
 const {
     MongoClient,
@@ -37,6 +38,7 @@ async function run() {
         const classesCollection = client.db('summerCampChildrenDb').collection('Classes');
         const bookedClassesCollection = client.db('summerCampChildrenDb').collection('bookedClasses');
         const userCollection = client.db('summerCampChildrenDb').collection('user');
+        const paymentsCollection = client.db('summerCampChildrenDb').collection('payments');
 
         // user api
         app.get('/users', async (req,res)=>{
@@ -185,6 +187,45 @@ async function run() {
                 email: email
             }
             const result = await bookedClassesCollection.find(filter).toArray();
+            res.send(result)
+        })
+
+        // booked class delete api
+         app.delete('/booked/class/:id', async (req,res)=>{
+            const id = req.params?.id;
+            const filter = {
+                _id: new ObjectId(id)
+            }
+            const result = await bookedClassesCollection.deleteOne(filter);
+            res.send(result)
+         })
+        //  payment api
+        app.post("/create-payment-intent", async (req, res) => {
+            const { price } = req.body;
+            const amount = price*100;
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount,
+                currency: 'usd',
+                payment_method_types: ['card']
+              });
+              res.send({
+                clientSecret: paymentIntent.client_secret
+              });
+        });
+
+        // payment collection api
+        app.get('/payments/:email', async (req,res)=>{
+            const email = req.params?.email;
+            const filter = {
+                email: email
+            }
+            const result = await paymentsCollection.find(filter).toArray()
+            res.send(result)
+        })
+
+        app.post('/payments', async (req,res)=>{
+            const payment = req.body;
+            const result = await paymentsCollection.insertOne(payment)
             res.send(result)
         })
 
